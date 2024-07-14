@@ -2,7 +2,7 @@ package net.javagudes.springboot.controller;
 
 import lombok.AllArgsConstructor;
 import net.javagudes.springboot.dto.UserDto;
-import net.javagudes.springboot.entity.User;
+
 import net.javagudes.springboot.service.UserService;
 import org.springframework.http.HttpStatus;
 
