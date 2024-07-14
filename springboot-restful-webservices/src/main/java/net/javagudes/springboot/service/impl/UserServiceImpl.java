@@ -3,6 +3,7 @@ package net.javagudes.springboot.service.impl;
 import lombok.AllArgsConstructor;
 import net.javagudes.springboot.dto.UserDto;
 import net.javagudes.springboot.entity.User;
+import net.javagudes.springboot.exception.ResourceNotFoundException;
 import net.javagudes.springboot.repository.UserRepository;
 import net.javagudes.springboot.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -32,8 +33,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long userid) {
-        Optional<User> users = userRepository.findById(userid);
-        return modelMapper.map(users.get(),UserDto.class);
+        User users = userRepository.findById(userid).orElseThrow(
+                ()-> new ResourceNotFoundException("user","id",userid)
+        );
+        return modelMapper.map(users,UserDto.class);
     }
 
     @Override
@@ -44,7 +47,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto user) {
-        User existinguser=userRepository.findById(user.getId()).get();
+        User existinguser=userRepository.findById(user.getId()).orElseThrow(
+                ()-> new ResourceNotFoundException("user","id",user.getId())
+        );
         existinguser.setFirstName(user.getFirstName());
         existinguser.setLastName(user.getLastName());
         existinguser.setEmail(user.getEmail());
@@ -54,6 +59,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userid) {
+        User users = userRepository.findById(userid).orElseThrow(
+                ()-> new ResourceNotFoundException("user","id",userid)
+        );
 userRepository.deleteById(userid);
     }
 
