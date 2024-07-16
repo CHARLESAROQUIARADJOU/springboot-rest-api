@@ -1,14 +1,19 @@
 package net.javagudes.springboot.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import net.javagudes.springboot.dto.UserDto;
 
+import net.javagudes.springboot.exception.ErrorDetails;
+import net.javagudes.springboot.exception.ResourceNotFoundException;
 import net.javagudes.springboot.service.UserService;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto users){
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto users){
        UserDto savedUser= userService.createUser(users);
        return new ResponseEntity<>(savedUser , HttpStatus.CREATED);
     }
@@ -37,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-public ResponseEntity<UserDto> updateUser(@PathVariable Long id,@RequestBody UserDto user){
+public ResponseEntity<UserDto> updateUser(@PathVariable Long id,@RequestBody @Valid UserDto user){
         user.setId(id);
     UserDto savedUser= userService.updateUser(user);
     return new ResponseEntity<>(savedUser , HttpStatus.OK);
@@ -49,4 +54,14 @@ public ResponseEntity<String> deleteUser(@PathVariable Long id){
         return new ResponseEntity<>("successfully deleted" ,HttpStatus.OK);
 
 }
+//@ExceptionHandler(ResourceNotFoundException.class)
+//public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest webRequest){
+//        ErrorDetails errorDetails = new ErrorDetails(
+//                LocalDateTime.now(),
+//                exception.getMessage(),
+//                webRequest.getDescription(false),
+//                "USER_NOT_FOUND"
+//        );
+//        return  new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+//}
 }

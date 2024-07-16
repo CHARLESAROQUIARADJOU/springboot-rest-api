@@ -3,6 +3,7 @@ package net.javagudes.springboot.service.impl;
 import lombok.AllArgsConstructor;
 import net.javagudes.springboot.dto.UserDto;
 import net.javagudes.springboot.entity.User;
+import net.javagudes.springboot.exception.EmailAlreadyExistsException;
 import net.javagudes.springboot.exception.ResourceNotFoundException;
 import net.javagudes.springboot.repository.UserRepository;
 import net.javagudes.springboot.service.UserService;
@@ -23,6 +24,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        Optional<User> optionalUser =userRepository.findByEmail(userDto.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email Already Exists");
+        }
         User user = modelMapper.map(userDto,User.class);
 //        User user =new User(userDto.getId(),userDto.getFirstName(),userDto.getLastName(),userDto.getEmail());
         User savedUser= userRepository.save(user);
